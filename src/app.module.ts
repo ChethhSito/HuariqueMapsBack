@@ -10,7 +10,7 @@ import { AuthModule } from './auth/auth.module';
   imports: [
     // Se conecta a MongoDB Atlas mediante variable de entorno o usa una base de datos local como fallback
     MongooseModule.forRoot(
-      process.env.MONGO_URI || 'mongodb://localhost:27017/huariquemap',
+      process.env.MONGO_URI || 'mongodb+srv://thelanceru_db_user:rY0Kl9H1IPK1fFZ5@clusterfree.ac74i5c.mongodb.net',
     ),
     HuariquesModule,
     UsersModule,
@@ -19,4 +19,4 @@ import { AuthModule } from './auth/auth.module';
   controllers: [AppController],
   providers: [AppService],
 })
-export class AppModule {}
+export class AppModule { }
