@@ -8,7 +8,7 @@ import { UsersModule } from '../users/users.module';
   imports: [
     UsersModule,
     JwtModule.register({
-      secret: process.env.JWT_SECRET || 'secretKeyDev',
+      secret: process.env.JWT_SECRET as string,
       signOptions: { expiresIn: '7d' },
     }),
   ],

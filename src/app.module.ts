@@ -1,5 +1,6 @@
 import { Module } from '@nestjs/common';
 import { MongooseModule } from '@nestjs/mongoose';
+import { ConfigModule } from '@nestjs/config';
 import { AppController } from './app.controller';
 import { AppService } from './app.service';
 import { HuariquesModule } from './huariques/huariques.module';
@@ -8,10 +9,9 @@ import { AuthModule } from './auth/auth.module';
 
 @Module({
   imports: [
-    // Se conecta a MongoDB Atlas mediante variable de entorno o usa una base de datos local como fallback
-    MongooseModule.forRoot(
-      process.env.MONGO_URI || 'mongodb+srv://thelanceru_db_user:rY0Kl9H1IPK1fFZ5@clusterfree.ac74i5c.mongodb.net',
-    ),
+    ConfigModule.forRoot({ isGlobal: true }),
+    // Se conecta a MongoDB Atlas exclusivamente mediante la variable de entorno
+    MongooseModule.forRoot(process.env.MONGO_URI as string),
     HuariquesModule,
     UsersModule,
     AuthModule,
