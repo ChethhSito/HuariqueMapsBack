@@ -13,6 +13,27 @@ export class PointGeometry {
 
 export const PointGeometrySchema = SchemaFactory.createForClass(PointGeometry);
 
+// Estructura para almacenar las Reseñas
+@Schema({ _id: false })
+export class Resena {
+  @Prop({ required: true })
+  usuarioId: string;
+
+  @Prop({ required: true })
+  usuarioNombre: string;
+
+  @Prop({ required: true })
+  comentario: string;
+
+  @Prop({ required: true, min: 1, max: 5 })
+  calificacion: number;
+
+  @Prop({ default: Date.now })
+  fecha: Date;
+}
+
+export const ResenaSchema = SchemaFactory.createForClass(Resena);
+
 @Schema({ timestamps: true })
 export class Huarique extends Document {
   @Prop({ required: true, trim: true })
@@ -29,6 +50,24 @@ export class Huarique extends Document {
 
   @Prop()
   horario: string; // Ej: "Lun-Sab: 12:00 - 17:00"
+
+  @Prop({ type: String })
+  creadoPor: string; // ID del usuario que lo registró
+
+  @Prop({ type: [String], default: [] })
+  votosExiste: string[]; // Lista de IDs de usuarios que confirman que existe
+
+  @Prop({ type: [String], default: [] })
+  votosNoExiste: string[]; // Lista de IDs de usuarios que reportan que no existe
+
+  @Prop({ type: [ResenaSchema], default: [] })
+  resenas: Resena[];
+
+  @Prop({ default: 0 })
+  ratingPromedio: number;
+
+  @Prop({ default: 0 })
+  numResenas: number;
 }
 
 export const HuariqueSchema = SchemaFactory.createForClass(Huarique);
