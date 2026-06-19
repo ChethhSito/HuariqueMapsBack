@@ -7,4 +7,5 @@ export class CreateHuariqueDto {
     coordinates: number[]; // [longitud, latitud]
   };
   readonly horario?: string;
+  readonly imagen?: string;
 }

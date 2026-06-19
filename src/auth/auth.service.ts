@@ -21,10 +21,15 @@ export class AuthService {
 
     const user = await this.usersService.create(nombre, email, passwordHash);
 
+    const payload = { sub: user._id, email: user.email, nombre: user.nombre };
+
     return {
-      id: user._id,
-      nombre: user.nombre,
-      email: user.email,
+      access_token: this.jwtService.sign(payload),
+      user: {
+        id: user._id,
+        nombre: user.nombre,
+        email: user.email,
+      },
     };
   }
 

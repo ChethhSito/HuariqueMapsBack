@@ -8,7 +8,7 @@ import { UsersModule } from '../users/users.module';
   imports: [
     UsersModule,
     JwtModule.register({
-      secret: process.env.JWT_SECRET as string,
+      secret: process.env.JWT_SECRET || 'super_secret_peru_huarique_map_key_12345',
       signOptions: { expiresIn: '7d' },
     }),
   ],

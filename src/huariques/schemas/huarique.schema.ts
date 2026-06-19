@@ -51,6 +51,9 @@ export class Huarique extends Document {
   @Prop()
   horario: string; // Ej: "Lun-Sab: 12:00 - 17:00"
 
+  @Prop({ trim: true })
+  imagen: string; // URL de la imagen del huarique
+
   @Prop({ type: String })
   creadoPor: string; // ID del usuario que lo registró
 
