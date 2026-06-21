@@ -27,4 +27,16 @@ export class AuthController {
 
     return this.authService.login(email, password);
   }
+
+  @Post('google')
+  @HttpCode(HttpStatus.OK)
+  async loginGoogle(@Body() body: any) {
+    const { token } = body;
+
+    if (!token) {
+      throw new BadRequestException('El token es obligatorio');
+    }
+
+    return this.authService.loginGoogle(token);
+  }
 }
