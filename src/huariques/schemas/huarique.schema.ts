@@ -57,6 +57,9 @@ export class Huarique extends Document {
   @Prop({ type: String })
   creadoPor: string; // ID del usuario que lo registró
 
+  @Prop({ type: String })
+  imagenUrl: string; // URL pública de Firebase Storage
+
   @Prop({ type: [String], default: [] })
   votosExiste: string[]; // Lista de IDs de usuarios que confirman que existe
 
@@ -71,6 +74,12 @@ export class Huarique extends Document {
 
   @Prop({ default: 0 })
   numResenas: number;
+
+  @Prop({ type: String, enum: ['PENDIENTE', 'APROBADO', 'RECHAZADO'], default: 'PENDIENTE' })
+  estado: string;
+
+  @Prop({ type: [String], default: [] })
+  likes: string[];
 }
 
 export const HuariqueSchema = SchemaFactory.createForClass(Huarique);

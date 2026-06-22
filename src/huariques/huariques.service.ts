@@ -3,6 +3,9 @@ import { InjectModel } from '@nestjs/mongoose';
 import { Model } from 'mongoose';
 import { Huarique } from './schemas/huarique.schema';
 import { CreateHuariqueDto } from './dto/create-huarique.dto';
+import { adminStorage } from '../firebase-admin';
+import * as path from 'path';
+import { randomUUID } from 'crypto';
 
 @Injectable()
 export class HuariquesService {
@@ -20,8 +23,25 @@ export class HuariquesService {
       resenas: [],
       ratingPromedio: 0,
       numResenas: 0,
+      estado: 'PENDIENTE',
+      likes: [],
     });
     return newHuarique.save();
+  }
+
+  // Buscar cercanos
+  async findNearby(lat: number, lng: number, maxDistance: number = 5000): Promise<Huarique[]> {
+    return this.huariqueModel.aggregate([
+      {
+        $geoNear: {
+          near: { type: 'Point', coordinates: [lng, lat] },
+          distanceField: 'distancia',
+          maxDistance: maxDistance,
+          spherical: true,
+          query: { estado: 'APROBADO' }
+        }
+      }
+    ]).exec();
   }
 
   // Listar todos los huariques
@@ -72,6 +92,11 @@ export class HuariquesService {
     }
     
     return list;
+  }
+
+  // Listar solo los aprobados
+  async findAllAprobados(): Promise<Huarique[]> {
+    return this.huariqueModel.find({ estado: 'APROBADO' }).exec();
   }
 
   // Buscar un huarique por ID
@@ -130,6 +155,95 @@ export class HuariquesService {
     huarique.numResenas = huarique.resenas.length;
     huarique.ratingPromedio = Math.round((totalCalificacion / huarique.numResenas) * 10) / 10;
 
+    return huarique.save();
+  }
+
+  // Alternar Like
+  async toggleLike(id: string, usuarioId: string): Promise<Huarique> {
+    const huarique = await this.findOne(id);
+    huarique.likes = huarique.likes || [];
+    const index = huarique.likes.indexOf(usuarioId);
+    if (index > -1) {
+      huarique.likes.splice(index, 1);
+    } else {
+      huarique.likes.push(usuarioId);
+    }
+    return huarique.save();
+  }
+
+  // Actualizar Estado
+  async updateEstado(id: string, estado: string): Promise<Huarique> {
+    const huarique = await this.findOne(id);
+    huarique.estado = estado;
+    return huarique.save();
+  }
+
+  // Editar Huarique
+  async update(id: string, updateData: any): Promise<Huarique> {
+    const huarique = await this.huariqueModel.findByIdAndUpdate(id, updateData, { new: true }).exec();
+    if (!huarique) throw new NotFoundException(`Huarique con ID ${id} no encontrado`);
+    return huarique;
+  }
+
+  // Eliminar Huarique
+  async remove(id: string): Promise<void> {
+    const result = await this.huariqueModel.findByIdAndDelete(id).exec();
+    if (!result) throw new NotFoundException(`Huarique con ID ${id} no encontrado`);
+  }
+
+  // Eliminar Reseña
+  async removeResena(id: string, resenaId: string): Promise<Huarique> {
+    const huarique = await this.findOne(id);
+    huarique.resenas = huarique.resenas.filter((r: any) => r._id.toString() !== resenaId);
+    
+    // Recalcular
+    const totalCalificacion = huarique.resenas.reduce((sum, r) => sum + r.calificacion, 0);
+    huarique.numResenas = huarique.resenas.length;
+    huarique.ratingPromedio = huarique.numResenas > 0 ? Math.round((totalCalificacion / huarique.numResenas) * 10) / 10 : 0;
+    
+    return huarique.save();
+  }
+
+  // Editar Reseña
+  async updateResena(id: string, resenaId: string, comentario: string, calificacion: number): Promise<Huarique> {
+    const huarique = await this.findOne(id);
+    const resena = huarique.resenas.find((r: any) => r._id.toString() === resenaId);
+    if (!resena) throw new NotFoundException('Reseña no encontrada');
+
+    resena.comentario = comentario;
+    resena.calificacion = calificacion;
+
+    // Recalcular
+    const totalCalificacion = huarique.resenas.reduce((sum, r) => sum + r.calificacion, 0);
+    huarique.ratingPromedio = huarique.numResenas > 0 ? Math.round((totalCalificacion / huarique.numResenas) * 10) / 10 : 0;
+
+    return huarique.save();
+  }
+
+  // Subir imagen a Firebase Storage y guardar URL en el huarique
+  async uploadImagen(id: string, file: Express.Multer.File): Promise<Huarique> {
+    const huarique = await this.findOne(id);
+
+    // Generar nombre único para el archivo en el bucket
+    const extension = path.extname(file.originalname) || '.jpg';
+    const fileName = `huariques/${id}/${randomUUID()}${extension}`;
+
+    const bucket = adminStorage.bucket();
+    const fileRef = bucket.file(fileName);
+
+    // Subir el buffer directamente a Firebase Storage
+    await fileRef.save(file.buffer, {
+      metadata: {
+        contentType: file.mimetype,
+      },
+    });
+
+    // Hacer el archivo público y obtener la URL
+    await fileRef.makePublic();
+    const publicUrl = `https://storage.googleapis.com/${bucket.name}/${fileName}`;
+
+    // Guardar la URL en MongoDB
+    huarique.imagenUrl = publicUrl;
     return huarique.save();
   }
 }

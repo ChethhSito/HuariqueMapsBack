@@ -46,7 +46,7 @@ export class AuthService {
       throw new UnauthorizedException('Credenciales incorrectas');
     }
 
-    const payload = { sub: user._id, email: user.email, nombre: user.nombre };
+    const payload = { sub: user._id, email: user.email, nombre: user.nombre, rol: user.rol };
 
     return {
       access_token: this.jwtService.sign(payload),
@@ -54,6 +54,7 @@ export class AuthService {
         id: user._id,
         nombre: user.nombre,
         email: user.email,
+        rol: user.rol,
       },
     };
   }
@@ -76,7 +77,7 @@ export class AuthService {
         user = await this.usersService.create(nombre, email, passwordHash);
       }
 
-      const payload = { sub: user._id, email: user.email, nombre: user.nombre };
+      const payload = { sub: user._id, email: user.email, nombre: user.nombre, rol: user.rol };
 
       return {
         access_token: this.jwtService.sign(payload),
@@ -84,6 +85,7 @@ export class AuthService {
           id: user._id,
           nombre: user.nombre,
           email: user.email,
+          rol: user.rol,
         },
       };
     } catch (error) {
