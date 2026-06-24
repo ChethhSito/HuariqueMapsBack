@@ -48,53 +48,133 @@ export class HuariquesService {
   async findAll(): Promise<Huarique[]> {
     const list = await this.huariqueModel.find().exec();
     
-    // Si la base de datos está vacía, retornamos una lista de ejemplo inicial
+    // Si la base de datos está vacía, insertamos datos reales directamente en MongoDB
     if (list.length === 0) {
-      return [
+      const seedData = [
         {
-          _id: 'mock1',
-          nombre: 'El Huarique de la Tía Veneno',
-          descripcion: 'Las mejores hamburguesas al paso y salchipapas de Lima.',
-          tipoComida: 'Comida Rápida / Criolla',
-          coordenadas: {
-            type: 'Point',
-            coordinates: [-77.036886, -12.046374], // Centro de Lima
-          },
-          horario: 'Lun-Sab: 18:00 - 23:00',
-          votosExiste: ['user1', 'user2', 'user3'],
-          votosNoExiste: [],
-          resenas: [
-            { usuarioId: 'user1', usuarioNombre: 'Gastón A.', comentario: 'Increíbles salchipapas, la salsa de ají es secreta y espectacular.', calificacion: 5, fecha: new Date() },
-            { usuarioId: 'user2', usuarioNombre: 'Sandra P.', comentario: 'Muy rico y barato, pero se llena rápido.', calificacion: 4, fecha: new Date() }
-          ],
-          ratingPromedio: 4.5,
-          numResenas: 2,
-          estado: 'APROBADO',
-          distrito: 'LIMA',
-          popular: true
-        },
-        {
-          _id: 'mock2',
-          nombre: 'Cevichería El Arrecife',
-          descripcion: 'El ceviche de carretilla más fresco y picante de la zona.',
+          nombre: 'El Ceviche de Pedro',
+          descripcion: 'Ceviche clásico de carretilla preparado al momento con pesca fresca del día, abundante limón piurano y choclo desgranado.',
           tipoComida: 'Marina',
           coordenadas: {
             type: 'Point',
-            coordinates: [-77.029891, -12.121147], // Miraflores
+            coordinates: [-77.0305, -12.1611] // Chorrillos
           },
-          horario: 'Mar-Dom: 11:30 - 16:30',
-          votosExiste: ['user1'],
-          votosNoExiste: [],
-          resenas: [
-            { usuarioId: 'user1', usuarioNombre: 'Gastón A.', comentario: 'El ceviche de carretilla por excelencia. Pica rico.', calificacion: 5, fecha: new Date() }
-          ],
-          ratingPromedio: 5.0,
-          numResenas: 1,
+          horario: 'Mar - Dom: 11:00 AM - 4:30 PM',
+          distrito: 'CHORRILLOS',
           estado: 'APROBADO',
-          distrito: 'MIRAFLORES',
-          popular: true
+          popular: true,
+          ratingPromedio: 4.8,
+          numResenas: 1,
+          resenas: [
+            {
+              usuarioId: 'admin_seed_id',
+              usuarioNombre: 'Gastón A.',
+              comentario: 'Excelente ceviche, el pescado súper fresco y la leche de tigre espectacular.',
+              calificacion: 5,
+              fecha: new Date()
+            }
+          ]
         },
-      ] as any[];
+        {
+          nombre: 'Anticuchos del Puente',
+          descripcion: 'Tradicionales brochetas de corazón a la parrilla marinados en ají panca y especias, acompañados de papas doradas y choclo tierno.',
+          tipoComida: 'Criolla',
+          coordenadas: {
+            type: 'Point',
+            coordinates: [-77.0222, -12.1495] // Barranco
+          },
+          horario: 'Lun - Sáb: 6:00 PM - 11:30 PM',
+          distrito: 'BARRANCO',
+          estado: 'APROBADO',
+          popular: true,
+          ratingPromedio: 4.5,
+          numResenas: 1,
+          resenas: [
+            {
+              usuarioId: 'admin_seed_id',
+              usuarioNombre: 'Sandra P.',
+              comentario: 'La carne súper tierna y el aderezo de panca es inigualable.',
+              calificacion: 5,
+              fecha: new Date()
+            }
+          ]
+        },
+        {
+          nombre: 'El Rinconcito Lomeño',
+          descripcion: 'Especialistas en lomo saltado ahumado al wok con cebolla crujiente, tomates jugosos y papas nativas amarillas fritas al instante.',
+          tipoComida: 'Fusión / Criolla',
+          coordenadas: {
+            type: 'Point',
+            coordinates: [-77.036886, -12.046374] // Centro de Lima
+          },
+          horario: 'Lun - Dom: 12:00 PM - 10:00 PM',
+          distrito: 'LIMA',
+          estado: 'APROBADO',
+          popular: true,
+          ratingPromedio: 4.7,
+          numResenas: 1,
+          resenas: [
+            {
+              usuarioId: 'admin_seed_id',
+              usuarioNombre: 'Raúl M.',
+              comentario: 'El sabor ahumado que logran es de otro planeta.',
+              calificacion: 5,
+              fecha: new Date()
+            }
+          ]
+        },
+        {
+          nombre: 'El Huarique de la Tía Veneno',
+          descripcion: 'Las mejores hamburguesas al paso y salchipapas tradicionales con cremas caseras.',
+          tipoComida: 'Comida Rápida / Criolla',
+          coordenadas: {
+            type: 'Point',
+            coordinates: [-77.0358, -12.0825] // Lince
+          },
+          horario: 'Lun - Sáb: 6:00 PM - 11:00 PM',
+          distrito: 'LINCE',
+          estado: 'APROBADO',
+          popular: false,
+          ratingPromedio: 4.2,
+          numResenas: 1,
+          resenas: [
+            {
+              usuarioId: 'admin_seed_id',
+              usuarioNombre: 'Luis G.',
+              comentario: 'Clásica carretilla con hamburguesas deliciosas y la tártara buenaza.',
+              calificacion: 4,
+              fecha: new Date()
+            }
+          ]
+        },
+        {
+          nombre: 'Cevichería El Arrecife',
+          descripcion: 'El ceviche de carretilla más fresco y picante de Miraflores.',
+          tipoComida: 'Marina',
+          coordenadas: {
+            type: 'Point',
+            coordinates: [-77.029891, -12.121147] // Miraflores
+          },
+          horario: 'Mar - Dom: 11:30 AM - 4:30 PM',
+          distrito: 'MIRAFLORES',
+          estado: 'APROBADO',
+          popular: false,
+          ratingPromedio: 4.6,
+          numResenas: 1,
+          resenas: [
+            {
+              usuarioId: 'admin_seed_id',
+              usuarioNombre: 'Gastón A.',
+              comentario: 'Buen ceviche mixto, pica rico y el camotito es dulcecito.',
+              calificacion: 5,
+              fecha: new Date()
+            }
+          ]
+        }
+      ];
+
+      await this.huariqueModel.insertMany(seedData);
+      return this.huariqueModel.find().exec();
     }
     
     return list;
