@@ -68,7 +68,10 @@ export class HuariquesService {
             { usuarioId: 'user2', usuarioNombre: 'Sandra P.', comentario: 'Muy rico y barato, pero se llena rápido.', calificacion: 4, fecha: new Date() }
           ],
           ratingPromedio: 4.5,
-          numResenas: 2
+          numResenas: 2,
+          estado: 'APROBADO',
+          distrito: 'LIMA',
+          popular: true
         },
         {
           _id: 'mock2',
@@ -86,7 +89,10 @@ export class HuariquesService {
             { usuarioId: 'user1', usuarioNombre: 'Gastón A.', comentario: 'El ceviche de carretilla por excelencia. Pica rico.', calificacion: 5, fecha: new Date() }
           ],
           ratingPromedio: 5.0,
-          numResenas: 1
+          numResenas: 1,
+          estado: 'APROBADO',
+          distrito: 'MIRAFLORES',
+          popular: true
         },
       ] as any[];
     }
