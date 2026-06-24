@@ -23,7 +23,7 @@ export class HuariquesService {
       resenas: [],
       ratingPromedio: 0,
       numResenas: 0,
-      estado: 'PENDIENTE',
+      estado: 'APROBADO',
       likes: [],
     });
     return newHuarique.save();

@@ -96,8 +96,8 @@ export class Huarique extends Document {
   @Prop({ default: 0 })
   numResenas: number;
 
-  @ApiProperty({ description: 'Estado de aprobación del huarique', enum: ['PENDIENTE', 'APROBADO', 'RECHAZADO'], default: 'PENDIENTE' })
-  @Prop({ type: String, enum: ['PENDIENTE', 'APROBADO', 'RECHAZADO'], default: 'PENDIENTE' })
+  @ApiProperty({ description: 'Estado de aprobación del huarique', enum: ['PENDIENTE', 'APROBADO', 'RECHAZADO'], default: 'APROBADO' })
+  @Prop({ type: String, enum: ['PENDIENTE', 'APROBADO', 'RECHAZADO'], default: 'APROBADO' })
   estado: string;
 
   @ApiProperty({ type: [String], description: 'Lista de IDs de usuarios que dieron Like al huarique', default: [] })
