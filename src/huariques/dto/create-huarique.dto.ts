@@ -28,6 +28,9 @@ export class CreateHuariqueDto {
   @ApiProperty({ description: 'Distrito del huarique (opcional)', example: 'LIMA', required: false })
   readonly distrito?: string;
 
+  @ApiProperty({ description: 'Arreglo de URLs de imágenes extras opcionales', type: [String], required: false })
+  readonly imagenesExtras?: string[];
+
   @ApiProperty({ description: 'Indica si es un huarique popular', example: false, default: false, required: false })
   readonly popular?: boolean;
 }

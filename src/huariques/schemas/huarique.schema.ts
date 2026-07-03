@@ -108,6 +108,10 @@ export class Huarique extends Document {
   @Prop({ type: String, trim: true })
   distrito: string;
 
+  @ApiProperty({ type: [String], description: 'Arreglo de URLs de imágenes extras opcionales', default: [] })
+  @Prop({ type: [String], default: [] })
+  imagenesExtras: string[];
+
   @ApiProperty({ description: 'Indica si el huarique es popular y debe destacarse en la landing', default: false })
   @Prop({ type: Boolean, default: false })
   popular: boolean;
