@@ -1,4 +1,4 @@
-import { Injectable, NotFoundException } from '@nestjs/common';
+import { BadRequestException, Injectable, NotFoundException } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 import { Model } from 'mongoose';
 import { Huarique } from './schemas/huarique.schema';
@@ -23,7 +23,7 @@ export class HuariquesService {
       resenas: [],
       ratingPromedio: 0,
       numResenas: 0,
-      estado: 'APROBADO',
+      estado: createHuariqueDto.estado || 'APROBADO',
       likes: [],
     });
     return newHuarique.save();
@@ -172,6 +172,23 @@ export class HuariquesService {
     const totalCalificacion = huarique.resenas.reduce((sum, r) => sum + r.calificacion, 0);
     huarique.ratingPromedio = huarique.numResenas > 0 ? Math.round((totalCalificacion / huarique.numResenas) * 10) / 10 : 0;
 
+    return huarique.save();
+  }
+
+  // Alternar flag de popular con validación de límite máximo 5
+  async togglePopular(id: string): Promise<Huarique> {
+    const huarique = await this.findOne(id);
+
+    if (!huarique.popular) {
+      const popularCount = await this.huariqueModel.countDocuments({ popular: true });
+      if (popularCount >= 5) {
+        throw new BadRequestException(
+          'Límite alcanzado: ya hay 5 huariques populares activos. Desactiva uno antes de añadir otro.',
+        );
+      }
+    }
+
+    huarique.popular = !huarique.popular;
     return huarique.save();
   }
 

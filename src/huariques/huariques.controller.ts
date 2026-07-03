@@ -152,6 +152,18 @@ export class HuariquesController {
     return this.huariquesService.toggleLike(id, req.user.sub);
   }
 
+  @Patch(':id/toggle-popular')
+  @UseGuards(JwtAuthGuard, RolesGuard)
+  @Roles('ADMIN')
+  @ApiBearerAuth()
+  @ApiOperation({ summary: 'Activar/desactivar flag popular de un huarique (Admin). Máximo 5 activos.' })
+  @ApiResponse({ status: 200, description: 'Flag popular actualizado' })
+  @ApiResponse({ status: 400, description: 'Límite de 5 huariques populares alcanzado' })
+  @ApiResponse({ status: 403, description: 'Acceso denegado (requiere rol ADMIN)' })
+  async togglePopular(@Param('id') id: string) {
+    return this.huariquesService.togglePopular(id);
+  }
+
   @Post(':id/imagen')
   @UseGuards(JwtAuthGuard)
   @ApiBearerAuth()

@@ -115,6 +115,10 @@ export class Huarique extends Document {
   @ApiProperty({ description: 'Indica si el huarique es popular y debe destacarse en la landing', default: false })
   @Prop({ type: Boolean, default: false })
   popular: boolean;
+
+  @ApiProperty({ description: 'Rango de precios: 1 = Económico ($), 2 = Intermedio ($$), 3 = Premium ($$$)', enum: [1, 2, 3], required: false })
+  @Prop({ type: Number, enum: [1, 2, 3] })
+  priceLevel: number;
 }
 
 export const HuariqueSchema = SchemaFactory.createForClass(Huarique);
