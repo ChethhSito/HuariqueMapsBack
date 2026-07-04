@@ -3,3 +3,6 @@ dist
 .git
 .dockerignore
 Dockerfile*
+.env
+firebase-admin-key.json
+huarique-map-*.json
